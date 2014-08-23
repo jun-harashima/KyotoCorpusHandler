@@ -3,6 +3,7 @@ package KyotoCorpusHandler;
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
+use utf8;
 
 =head1 NAME
 
@@ -33,6 +34,33 @@ Perhaps a little code snippet.
 sub new {
     my ($class, %args) = @_;
     bless \%args, $class;
+}
+
+sub extract_substantive {
+    my ($self, $buf, $option) = @_;
+    my @substantives = ();
+    foreach my $line (split /\n/, $buf) {
+	next if $line =~ /^[#\*\+]/ || $line eq "EOS";
+	my ($midashi, $yomi, $genkei, $hinshi, $bunrui, $bunrui2, @rest) = split /\s/, $line;
+	if ($self->_is_noun($hinshi, $bunrui, $option) || $self->_is_acceptable_adjective($bunrui2)) {
+	    push @substantives, $midashi;
+	}
+    }
+    @substantives;
+}
+
+sub _is_noun {
+    my ($self, $hinshi, $bunrui, $option) = @_;
+    if ($option->{"extracted_noun"}) {
+	$option->{"extracted_noun"}{$bunrui};
+    } else {
+	$hinshi eq "名詞";
+    }
+}
+
+sub _is_acceptable_adjective {
+    my ($self, $bunrui2) = @_;
+    $bunrui2 eq "ナノ形容詞";
 }
 
 =head1 AUTHOR
