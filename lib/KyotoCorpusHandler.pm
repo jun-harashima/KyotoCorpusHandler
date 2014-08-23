@@ -32,8 +32,8 @@ Perhaps a little code snippet.
 =cut
 
 sub new {
-    my ($class, %args) = @_;
-    bless \%args, $class;
+    my ($self, %args) = @_;
+    bless \%args, $self;
 }
 
 sub extract_substantive {
