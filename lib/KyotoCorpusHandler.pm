@@ -41,9 +41,18 @@ sub extract_substantive {
     my @substantives = ();
     foreach my $line (split /\n/, $buf) {
 	next if $line =~ /^[#\*\+]/ || $line eq "EOS";
-	my ($midashi, $yomi, $genkei, $hinshi, $bunrui, $bunrui2, @rest) = split /\s/, $line;
-	if ($self->_is_noun($hinshi, $bunrui, $option) || $self->_is_acceptable_adjective($bunrui2)) {
+	my ($midashi, $yomi, $genkei, $hinshi, $bunrui, $bunrui2, $katsuyou, @rest) = split /\s/, $line;
+	if ($self->_is_noun($hinshi, $bunrui, $option)) {
 	    push @substantives, $midashi;
+	}
+	# e.g. 明確に めいかくに 明確だ 形容詞 * ナ形容詞 ダ列基本連用形
+	elsif ($hinshi eq "形容詞" && $bunrui2 eq "ナ形容詞") {
+	    $genkei =~ s/だ$//;
+	    push @substantives, $genkei;
+	}
+	elsif ($bunrui2 eq "ナノ形容詞") {
+	    $genkei =~ s/だ$//;
+	    push @substantives, $genkei;
 	}
     }
     @substantives;
@@ -56,11 +65,6 @@ sub _is_noun {
     } else {
 	$hinshi eq "名詞";
     }
-}
-
-sub _is_acceptable_adjective {
-    my ($self, $bunrui2) = @_;
-    $bunrui2 eq "ナノ形容詞";
 }
 
 =head1 AUTHOR
