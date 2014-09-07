@@ -47,8 +47,8 @@ sub extract_substantive {
 	}
 	# e.g. 明確に めいかくに 明確だ 形容詞 * ナ形容詞 ダ列基本連用形
 	elsif ($hinshi eq "形容詞" && $bunrui2 eq "ナ形容詞") {
-	    $genkei =~ s/だ$//;
-	    push @substantives, $genkei;
+	    # e.g. 不確定だ ふかくていだ * 形容詞 * ナ形容詞 基本形
+	    push @substantives, $1 if ($genkei =~ /(.+?)だ$/);
 	}
 	elsif ($bunrui2 eq "ナノ形容詞") {
 	    $genkei =~ s/だ$//;
