@@ -51,8 +51,8 @@ sub extract_substantive {
 	    push @substantives, $1 if ($genkei =~ /(.+?)だ$/);
 	}
 	elsif ($bunrui2 eq "ナノ形容詞") {
-	    $genkei =~ s/だ$//;
-	    push @substantives, $genkei;
+	    # e.g. 必要だ ひつようだ * 形容詞 * ナノ形容詞 基本形
+	    push @substantives, $1 if ($genkei =~ /(.+?)だ$/);
 	}
     }
     @substantives;
